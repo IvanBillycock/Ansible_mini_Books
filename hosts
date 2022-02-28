@@ -1,0 +1,150 @@
+all:
+    vars:
+        ansible_python_interpreter: /usr/bin/python3
+    hosts:
+        FF-GITLAB:
+            ansible_host: 10.130.5.193
+        passbolt:
+            ansible_host: 10.130.5.195
+            ansible_user: root
+        onlyoffice:
+            ansible_host: 10.130.5.201
+            ansible_user: root
+    children:
+        runners:
+            vars:
+                ansible_python_interpreter: /usr/bin/python3
+                ansible_user: root
+            hosts:
+                10.150.11.104
+
+        gitlab:
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+            ansible_user: root
+          hosts:
+            10.130.5.194
+
+
+        debian:
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+            ansible_user: timepath
+          hosts:
+            10.130.5.196
+
+        ics-kk16471:
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+            ansible_user: root
+          hosts:
+            10.150.11.40
+
+        winrunner:
+          vars:
+            ansible_connection: ssh
+            ansible_shell_type: cmd
+            ansible_user: administrator
+          hosts:
+            test-runner:
+              ansible_host: 10.150.7.139
+        gis:
+          vars:
+            ansible_user: contractor
+            ansible_python_interpreter: /usr/bin/python
+            ansible_host: 10.130.5.186
+          hosts:
+            gis-01:
+              ansible_port: 11482
+            gis-02:
+              ansible_port: 11502
+            gis-03:
+              ansible_port: 11512
+            gis-04:
+              ansible_port: 11522
+            gis-05:
+              ansible_port: 11532
+            gis-06:
+              ansible_port: 12312
+            gis-07:
+              ansible_port: 12322
+            gis-08:
+              ansible_port: 12332
+            gis-09:
+              ansible_port: 12342
+            gis-10:
+              ansible_port: 12352
+            gis-11:
+              ansible_port: 12362
+            gis-12:
+              ansible_port: 12372
+            gis-13:
+              ansible_port: 12382
+            gis-14:
+              ansible_port: 22422
+            gis-15:
+              ansible_port: 22432
+            gis-16:
+              ansible_port: 22442
+
+        gis2:
+          vars:
+            ansible_user: contractor
+            ansible_python_interpreter: /usr/bin/python
+            ansible_host: 10.130.5.186
+          hosts:
+            gis-101:
+              ansible_port: 10022
+            gis-102:
+              ansible_port: 10032
+            gis-103:
+              ansible_port: 10042
+            gis-104:
+              ansible_port: 10052
+            gis-105:
+              ansible_port: 10062
+            gis-106:
+              ansible_port: 10072
+            gis-107:
+              ansible_port: 10082
+            gis-108:
+              ansible_port: 10092
+            gis-109:
+              ansible_port: 10102
+            gis-110:
+              ansible_port: 10112
+            gis-111:
+              ansible_port: 10122
+            gis-112:
+              ansible_port: 10132
+            gis-113:
+              ansible_port: 10142
+            gis-114:
+              ansible_port: 10152
+            gis-115:
+              ansible_port: 10162
+            gis-116:
+              ansible_port: 10172
+            gis-pub-02:
+              ansible_port: 10182
+
+        RGISPK:
+          vars:
+            ansible_user: contractor
+            ansible_python_interpreter: /usr/bin/python
+            ansible_host: 10.130.5.186
+          hosts:
+            apps:
+              ansible_port: 10822
+            db:
+              ansible_port: 10832
+            r-gis:
+              ansible_port: 10842
+            kosmos:
+              ansible_port: 10882
+            pred-apps:
+              ansible_port: 10852
+            pred-db:
+              ansible_port: 10862
+            pred-gis:
+              ansible_port: 10872

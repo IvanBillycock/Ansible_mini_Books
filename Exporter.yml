@@ -1,0 +1,23 @@
+- name: Install Exporter
+  hosts: RGISPK
+  become: yes
+  become_method: sudo
+  tasks:
+
+  - name: Create Exporter directory
+    file:
+      dest: /opt/exporter
+      mode: 0755
+      owner: root
+      group: root
+      state: directory
+
+  - name: unarchive exporter
+    unarchive:
+      src: ExporterInstaller.tar.gz
+      dest: /opt/exporter
+
+  - name: insttall exporter
+    shell:
+      cmd: /opt/exporter/ei/ei.sh node
+      chdir: /opt/exporter/ei/

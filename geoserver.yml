@@ -1,0 +1,79 @@
+- name: Install GeoServer
+  hosts: all
+  become: yes
+  become_method: su
+  tasks:
+
+  - name: install Development Tools
+    yum:
+      name:
+        - gcc
+        - gcc-c++
+        - kernel-devel
+        - make
+      state: present
+
+  - name: Install the libselinux-python package
+    yum:
+      name:
+        - libselinux-python
+      state: present
+
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+
+  - name: Disable Firewalld
+    service:
+      name: firewalld
+      enabled: no
+
+  - name: Stop Firewalld
+    service:
+      name: firewalld
+      state: stopped
+
+  - name: Create Java directory
+    file:
+      dest: /usr/lib/jvm
+      mode: 0755
+      owner: root
+      group: root
+      state: directory
+
+  - name: install Java 8
+    unarchive:
+      src: java-1.8.0.291.tar.gz
+      dest: /usr/lib/jvm
+
+  - name: Create Java link
+    file:
+      src: /usr/lib/jvm/java-1.8.0.291/bin/java
+      dest: /usr/bin/java
+      state: link
+
+  - name: install Tomcat
+    unarchive:
+      src: apache-tomcat.tar.gz
+      dest: /opt
+
+  - name: Copy Tomcat service
+    copy:
+      src: ./tomcat.service
+      dest: /etc/systemd/system/tomcat.service
+      mode: 0775
+      owner: root
+      group: root
+
+  - name: Enable service Tomcat
+    service:
+      name: tomcat.service
+      enabled: yes
+
+  - name: install Geoserver
+    unarchive:
+      src: geoserver.tar.gz
+      dest: /opt/apache-tomcat/webapps
+
+  - name: Unconditionally reboot the machine
+    reboot:

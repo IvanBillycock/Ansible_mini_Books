@@ -1,0 +1,10 @@
+- name: Add restart dll-isd.service to cron
+  hosts: gis
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Add cron job
+    cron:
+      name: "Restart DallasLock - dll-isd.service"
+      minute: "*/15"
+      job: "systemctl restart dll-isd.service"

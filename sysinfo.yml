@@ -1,0 +1,10 @@
+- name: CPU and RAM
+  hosts: gis
+  tasks:
+
+    - name: Run
+      debug:
+        msg:
+        - "{{ ansible_hostname }}"
+        - "{{ ansible_processor_vcpus }}"
+        - "{{ ansible_memory_mb.real.total }}"

@@ -1,0 +1,54 @@
+- name: Docker Swarm to Debian
+  hosts: all
+  become: yes
+  become_method: su
+  tasks:
+  - name: Delete old versions
+    apt:
+      name:
+        - docker
+        - docker-engine
+        - docker.io
+        - containerd
+        - runc
+      state: absent
+
+  - name: Install dependency for apt
+    apt:
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+      state: present
+      update_cache: yes
+
+  - name: Add GPG key
+    apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+      state: present
+
+  - name: Add docker repository to apt
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+      state: present
+
+  - name: Install docker
+    apt:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+      state: latest
+      update_cache: yes
+
+  - name: Make sure docker is active
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Init a new swarm with default parameters
+    community.docker.docker_swarm:
+      state: present

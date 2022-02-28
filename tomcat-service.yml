@@ -1,0 +1,20 @@
+- name: Tomcat service
+  hosts: gis-09
+  become: yes
+  become_method: sudo
+  tasks:
+
+  - name: edit tomcat service
+    lineinfile:
+      path: /etc/systemd/system/tomcat.service
+      state: present
+      regexp: 'Xms'
+      line: Environment='CATALINA_OPTS=-Xms18000M -Xmx18000M -server -XX:+UseParNewGC -XX:SoftRefLRUPolicyMSPerMB=36000 -XX:+UseLargePages'
+    register: tomcat
+
+  - name: restart tomcat
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: tomcat
+    when: tomcat.changed

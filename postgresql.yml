@@ -1,0 +1,65 @@
+- name: PostgresSQL 9.6 to Debian
+  hosts: all
+  become: yes
+  become_method: su
+  tasks:
+
+  - name: Install dependency for apt
+    apt:
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+        - python3-psycopg2
+      state: present
+      update_cache: yes
+
+  - name: Import the repository signing key
+    apt_key:
+      url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      state: present
+
+  - name: Create the file repository configuration
+    apt_repository:
+      repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main
+      state: present
+
+  - name: Install Postgresql
+    apt:
+      name:
+        - postgresql-{{ pg_version }}
+      state: present
+      update_cache: yes
+
+  - name: postgresql.conf - all IP addresses to listen ON
+    lineinfile:
+      path: /etc/postgresql/{{ pg_version }}/main/postgresql.conf
+      regexp: '^listen_addresses'
+      insertafter: '^#listen_addresses'
+      line: listen_addresses = '*'
+
+  - name: Local connections ON
+    lineinfile:
+      path: /etc/postgresql/{{ pg_version }}/main/pg_hba.conf
+      line: host all all 0.0.0.0/0 md5
+      create: yes
+
+  - name: Change password for postgres
+    become_user: postgres
+    community.postgresql.postgresql_user:
+      db: postgres
+      name: postgres
+      password: "skyori159"
+
+  - name: Enable Postgresql
+    service:
+      name: postgresql
+      state: started
+      enabled: yes
+
+  - name: Restart Postgresql
+    service:
+      name: postgresql
+      state: restarted
